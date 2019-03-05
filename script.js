@@ -109,14 +109,14 @@ var scrollVis = function () {
         .attr('class', 'x axis')
         .attr('transform', 'translate(0,' + height + ')')
         .call(xAxisBar);
-      g.select('.x.axis').style('opacity', 0);
+    g.select('.x.axis').style('opacity', 0);
 
 
     // Propublica image
     var imgs = g.append('image')
       .attr("class", "image")
       .attr("xlink:href", "data/propublica.png")
-      .attr('x', 0)
+      .attr('x', 400)
       .attr('y', -1000)
       .attr('width', 400)
       .attr('height', 400)
@@ -320,7 +320,7 @@ var scrollVis = function () {
         g.selectAll('.bar-text')
             .transition()
             .duration(400)
-            .attr('y',height)
+            .attr('y',height-20)
             .style('opacity', 0);
 
         g.selectAll('.bartitle')
