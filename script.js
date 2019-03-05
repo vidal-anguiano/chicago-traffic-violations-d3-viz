@@ -117,9 +117,10 @@ var scrollVis = function () {
       .attr("class", "image")
       .attr("xlink:href", "data/propublica.png")
       .attr('x', 0)
-      .attr('y', 0)
-      .attr('width', 500)
-      .attr('height', 500);;
+      .attr('y', -1000)
+      .attr('width', 400)
+      .attr('height', 400)
+      .attr("transform", "rotate("+-90+")");;
 
     var bars = g.selectAll('.bars').data(cumData);
     var barsE = bars.enter()
@@ -234,8 +235,11 @@ var scrollVis = function () {
 
     g.selectAll('.image')
       .transition()
-      .duration(600)
-          .attr('opacity', 1);
+            .duration(1200)
+            .attr('x', 0)
+            .attr('y', 100)
+            .attr('opacity', .2)
+            .attr("transform", "rotate("+-15+")");
 
     g.selectAll('.bars')
           .transition()
@@ -283,7 +287,7 @@ var scrollVis = function () {
 
         g.selectAll('.bar-text')
             .transition()
-            .delay(600)
+            .delay(400)
             .duration(600)
             .attr('y', (s) => yBarScale(s.cum_debt))
             .style('opacity', 1);
@@ -322,7 +326,7 @@ var scrollVis = function () {
         g.selectAll('.bartitle')
             .transition('title')
             .duration(600)
-            .attr('y', height)
+            .attr('y', -100)
             .attr('opacity', 0);
   }
 
