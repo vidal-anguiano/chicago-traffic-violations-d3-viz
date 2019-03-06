@@ -45,8 +45,9 @@
   margin-left: 0;
 }
 
-#vis .title {
-  font-size:120px;
+#vis .main-title {
+  font-size: 60px;
+  font-family: Arial,Helvetica,"san-serif";;
   text-anchor: middle;
 }
 
