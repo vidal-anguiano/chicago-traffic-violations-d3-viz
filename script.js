@@ -601,7 +601,7 @@ var randPoint = function(min, max) {
     // d3.tsv('./data/words.tsv').then(display);
 
 
-var files = ['data/cum_debt.json', './data/agg_data.json'];
+var files = ['data/cum_debt.json', 'data/agg_data.json'];
     var promises = [];
 
     files.forEach(function(url, i) {
