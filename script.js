@@ -8,40 +8,51 @@
     var scrollVis = function () {
     // constants to define the size
     // and margins of the vis area.
-    var width = 600;
-    var height = 520;
-    var margin = { top: 0, left: 20, bottom: 40, right: 10 };
+        var width = 600;
+        var height = 520;
+        var margin = { top: 0, left: 20, bottom: 40, right: 10 };
 
     // Keep track of which visualization
     // we are on and which was the last
     // index activated. When user scrolls
     // quickly, we want to call all the
     // activate functions that they pass.
-    var lastIndex = -1;
-    var activeIndex = 0;
+        var lastIndex = -1;
+        var activeIndex = 0;
 
     // Sizing for the grid visualization
-    var squareSize = 6;
-    var squarePad = 2;
-    var numPerRow = width / (squareSize + squarePad);
+        var squareSize = 6;
+        var squarePad = 2;
+        var numPerRow = width / (squareSize + squarePad);
 
     // main svg used for visualization
-    var svg = null;
+        var svg = null;
 
     // d3 selection that will be used
     // for displaying visualizations
-    var g = null;
+        var g = null;
 
         var xBarScale = d3.scaleBand()
             .paddingInner(.08)
             .range([0, width - 20]);
 
-
         var yBarScale = d3.scaleLinear()
             .range([height, 100]);
 
-    var xAxisBar = d3.axisBottom()
-        .scale(xBarScale);
+        var xAxisBar = d3.axisBottom()
+            .scale(xBarScale);
+
+        var xScatterScale = d3.scaleLinear()
+            .range([0, width - 20]);
+
+        var yScatterScale = d3.scaleLinear()
+            .range([height, 100]);
+
+        var xAxisScatter = d3.axisBottom()
+            .scale(xScatterScale);
+
+        var yAxisScatter = d3.axisLeft()
+            .scale(yScatterScale);
 
     // When scrolling to a new section
     // the activation function for that
@@ -81,12 +92,17 @@
             .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
         var cumDebtMax = d3.max(rawData[0], function (d) { return d.cum_debt;});
-            yBarScale.domain([0, cumDebtMax]);
-            xBarScale.domain(rawData[0].map((s) => s.year));
+        var cumMedianMax = d3.max(rawData[1], function (d) { return d.monthly_median_income;});
+        var cumPercentMax = d3.max(rawData[1], function (d) { return d.percent_monthly_median_income;});
+        yBarScale.domain([0, cumDebtMax]);
+        xBarScale.domain(rawData[0].map((s) => s.year));
+        xScatterScale.domain([0, cumMedianMax]);
+        yScatterScale.domain([0, cumPercentMax]);
 
         var cumData = rawData[0];
+        var monthlyIncome = rawData[1];
 
-        setupVis(cumData);
+        setupVis(cumData, monthlyIncome);
 
         setupSections();
         });
@@ -102,7 +118,7 @@
     *  element for each filler word type.
     * @param histData - binned histogram data
     */
-    var setupVis = function (cumData) {
+    var setupVis = function (cumData, monthlyIncome) {
 
         // axis
         g.append('g')
@@ -111,7 +127,7 @@
             .call(xAxisBar);
         g.select('.x.axis').style('opacity', 0);
 
-        // Title
+        // Section 1: Title
         var main_title = g.append('text')
             .attr('class', 'main-title')
             .attr('opacity', 0);
@@ -125,7 +141,7 @@
             .attr('x', width / 2)
             .attr('y', height / 2);
 
-        // Propublica image
+        // Section 2: Propublica image
         var imgs = g.append('image')
             .attr("class", "image")
             .attr("xlink:href", "data/propublica.png")
@@ -135,6 +151,7 @@
             .attr('height', 400)
             .attr("transform", "rotate("+-90+")");;
 
+        // Section 3: Cumulative Debt BarChart
         var bars = g.selectAll('.bars').data(cumData);
         var barsE = bars.enter()
             .append('rect')
@@ -187,7 +204,20 @@
             .attr('font-family', 'Arial')
             .attr('opacity', 0)
             .attr('font-weight', 'bold');
+
+
+        // Section 4: Sand
+        var dots = g.selectAll('.dots').data(monthlyIncome);
+        var dotsE = dots.enter()
+            .append("circle")
+            .attr("class", function (d) { return "dot " + d.income_level; })
+            .attr("r", .8)
+            .attr('opacity', 0)
+            .attr("cx", function(d, i) { return randPoint(0, width);});
+        // .attr("cx", function(d) { return xScatterScale(d.monthly_median_income);})
+        // .attr("cy", function(d) { return yScatterScale(d.percent_monthly_meddian_income);})
     };
+
 
     /**
     * setupSections - each section is activated
@@ -202,7 +232,11 @@
         activateFunctions[0] = showTitle;
         activateFunctions[1] = showNews;
         activateFunctions[2] = showBars;
-        activateFunctions[3] = hideBars;
+        activateFunctions[3] = showSand;
+        activateFunctions[4] = siftLowLow;
+        activateFunctions[5] = siftLowDebt;
+        activateFunctions[6] = siftMediumDebt;
+        activateFunctions[7] = siftHighDebt;
 
 
         // updateFunctions are called while
@@ -339,17 +373,15 @@
                 .attr('y', 60)
                 .attr('opacity',1);
 
+            g.selectAll('.dot')
+                .transition()
+                .duration(200)
+                .attr('opacity', 0);
+
+
         };
 
-    /**
-    * showGrid - square grid
-    *
-    * hides: filler count title
-    * hides: filler highlight in grid
-    * shows: square grid
-    *
-    */
-        function hideBars() {
+        function showSand() {
             hideAxis();
             g.selectAll('.bars')
                 .transition()
@@ -369,7 +401,104 @@
                 .duration(600)
                 .attr('y', -100)
                 .attr('opacity', 0);
-    }
+
+            console.log('hola guey');
+
+            g.selectAll('.dot')
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * .2; })
+                .attr('opacity', 1)
+                .attr('r', .5)
+                .attr("cx", function(d, i) { return randPoint(0, width);})
+                .attr("cy", function(d, i) { return randPoint(0, 50);});
+        };
+
+        function siftLowLow () {
+            g.selectAll('.dot')
+                .filter(function (d) { return (d.percent_monthly_median_income < .25);})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * .5; })
+                .attr('opacity', 1)
+                .attr('r', 2)
+                .attr("cx", function(d, i) { return randPoint(50, width-50);})
+                .attr("cy", function(d, i) { return randPoint(175, 225);});
+
+            g.selectAll('.dot')
+                .filter(function (d) { return (d.percent_monthly_median_income >= .25) &
+                                              (d.percent_monthly_median_income <= .4);})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * .5; })
+                .attr('opacity', 1)
+                .attr('r', .5)
+                .attr("cx", function(d, i) { return randPoint(0, width);})
+                .attr("cy", function(d, i) { return randPoint(0, 50);});
+        };
+
+        function siftLowDebt () {
+            g.selectAll('.dot')
+                .filter(function (d) { return (d.percent_monthly_median_income >= .25) &
+                                              (d.percent_monthly_median_income <= .4);})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * 1; })
+                .attr('opacity', 1)
+                .attr('r', 2)
+                .attr("cx", function(d, i) { return randPoint(100, width-100);})
+                .attr("cy", function(d, i) { return randPoint(250, 300);});
+
+            g.selectAll('.dot')
+                .filter(function (d) { return (d.percent_monthly_median_income <= .75) & (d.percent_monthly_median_income > .4);})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * 1; })
+                .attr('opacity', 1)
+                .attr('r', .5)
+                .attr("cx", function(d, i) { return randPoint(0, width);})
+                .attr("cy", function(d, i) { return randPoint(0, 50);});
+        };
+
+
+        function siftMediumDebt () {
+            g.selectAll('.dot')
+                .filter(function (d) { return (d.percent_monthly_median_income <= .75) &
+                                              (d.percent_monthly_median_income > .4);})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * 3; })
+                .attr('opacity', 1)
+                .attr('r', 2)
+                .attr("cx", function(d, i) { return randPoint(150, width-150);})
+                .attr("cy", function(d, i) { return randPoint(325, 375);});
+
+            g.selectAll('.dot')
+                .filter(function (d) { return d.percent_monthly_median_income > .75;})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * 5; })
+                .attr('opacity', 1)
+                .attr('r', .5)
+                .attr("cx", function(d, i) { return randPoint(0, width);})
+                .attr("cy", function(d, i) { return randPoint(0, 50);});
+
+        };
+
+
+        function siftHighDebt () {
+            g.selectAll('.dot')
+                .filter(function (d) { return d.percent_monthly_median_income > .75;})
+                .transition()
+                .duration(100)
+                .delay(function(d, i) { return i * 5; })
+                .attr('opacity', 1)
+                .attr('r', 2)
+                .attr("cx", function(d, i) { return randPoint(200, width-200);})
+                .attr("cy", function(d, i) { return randPoint(400, 450);});
+
+        };
+
 
     /**
     * showAxis - helper function to
@@ -462,13 +591,17 @@
     scroll.on('progress', function (index, progress) {
         plot.update(index, progress);
     });
-    }
+    };
+
+var randPoint = function(min, max) {
+    return Math.floor(Math.random() * (max-min)) + min;
+};
 
     // load data and display
     // d3.tsv('./data/words.tsv').then(display);
 
 
-    var files = ['data/cum_debt.json'];
+var files = ['data/cum_debt.json', './data/agg_data.json'];
     var promises = [];
 
     files.forEach(function(url, i) {
@@ -478,5 +611,6 @@
     Promise.all(promises)
         .then(function (promises) {
             console.log(promises[0]);
+            console.log(promises[1]);
             display(promises);
         });

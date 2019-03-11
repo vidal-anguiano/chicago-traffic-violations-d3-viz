@@ -1,6 +1,7 @@
 
 .container {
-  width: 890px;
+    max-width: 900px;
+    margin: auto;
 }
 
 #graphic {
@@ -74,3 +75,15 @@
 
 }
 
+
+.low-income {
+    fill: #173F5F;
+ }
+
+.middle-income {
+    fill: #F6D55C;
+}
+
+.high-income {
+    fill: #ED553B;
+}
