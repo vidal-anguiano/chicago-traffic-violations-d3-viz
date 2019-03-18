@@ -145,8 +145,8 @@
         var imgs = g.append('image')
             .attr("class", "image")
             .attr("xlink:href", "data/propublica.png")
-            .attr('x', 0)
-            .attr('y', 0)
+            .attr('x', 300)
+            .attr('y', 500)
             .attr('width', 400)
             .attr('height', 400)
             .attr("transform", "rotate("+-90+")");;
@@ -216,8 +216,70 @@
             .attr("cx", function(d, i) { return randPoint(0, width);});
         // .attr("cx", function(d) { return xScatterScale(d.monthly_median_income);})
         // .attr("cy", function(d) { return yScatterScale(d.percent_monthly_meddian_income);})
-    };
 
+        // console.log(monthlyIncome);
+        // var simulation = d3.forceSimulation(monthlyIncome)
+        //     .force('charge', d3.forceManyBody().strength(5))
+        //     .force('center', d3.forceCenter(width / 2, height / 2))
+        //     .force('collision', d3.forceCollide().radius(2))
+        //     .on('tick', siftHighDebt);
+
+        var dots_title = g.selectAll('.dotstitle').data([0]);
+        dots_title.enter()
+            .append('text')
+            .attr('class', 'dots-title one')
+            .attr('x', width/2)
+            .attr('y', 38)
+            .text('945K Drivers')
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('opacity',0);
+
+        var dots_title2 = g.selectAll('.dotstitle').data([0]);
+        dots_title2.enter()
+            .append('text')
+            .attr('class', 'dots-title two')
+            .attr('x', width/2)
+            .attr('y', 175)
+            .text('800K Drivers')
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('opacity', 0);
+
+        var dots_title3 = g.selectAll('.dotstitle').data([0]);
+        dots_title3.enter()
+            .append('text')
+            .attr('class', 'dots-title three')
+            .attr('x', width/2)
+            .attr('y', 315)
+            .text('94K Drivers')
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('opacity', 0);
+
+        var dots_title4 = g.selectAll('.dotstitle').data([0]);
+        dots_title4.enter()
+            .append('text')
+            .attr('class', 'dots-title four')
+            .attr('x', width/2)
+            .attr('y', 352)
+            .text('52K Drivers')
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('opacity', 0);
+
+        var dots_title5 = g.selectAll('.dotstitle').data([0]);
+        dots_title5.enter()
+            .append('text')
+            .attr('class', 'dots-title five')
+            .attr('x', width/2)
+            .attr('y', 387)
+            .text('16K Drivers')
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('opacity', 0);
+
+    };
 
     /**
     * setupSections - each section is activated
@@ -248,7 +310,7 @@
         for (var i = 0; i < 9; i++) {
         updateFunctions[i] = function () {};
         }
-        updateFunctions[7] = 'functions here';
+        updateFunctions[100] = 'functions here';
     };
 
     /**
@@ -282,8 +344,8 @@
         g.selectAll('.image')
             .transition()
             .duration(600)
-            .attr('x', 0)
-            .attr('y', 0)
+            .attr('x', 300)
+            .attr('y', 500)
             .attr('opacity', 0)
             .attr("transform", "rotate("+-90+")");
     };
@@ -350,6 +412,8 @@
                 .transition()
                 .duration(400)
                 .attr('opacity', 0)
+                .attr('x', 300)
+                .attr('y', 500)
                 .attr("transform", "rotate("+-90+")");
 
 
@@ -372,6 +436,13 @@
                 .duration(600)
                 .attr('y', 60)
                 .attr('opacity',1);
+
+            g.select('.dots-title.one')
+                .classed('highlighted-dots-title', false)
+                .transition()
+                .duration(400)
+                .attr('opacity', 0);
+
 
             g.selectAll('.dot')
                 .transition()
@@ -402,7 +473,12 @@
                 .attr('y', -100)
                 .attr('opacity', 0);
 
-            console.log('hola guey');
+            g.selectAll('.dots-title.one')
+                .classed('highlighted-dots-title', true);
+
+            g.selectAll('.dots-title.two')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', 0);
 
             g.selectAll('.dot')
                 .transition()
@@ -415,6 +491,18 @@
         };
 
         function siftLowLow () {
+
+            g.selectAll('.dots-title.one')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', .2);
+
+            g.selectAll('.dots-title.two')
+                .classed('highlighted-dots-title', true);
+
+            g.selectAll('.dots-title.three')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', 0);
+
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income < .25);})
                 .transition()
@@ -422,8 +510,8 @@
                 .delay(function(d, i) { return i * .5; })
                 .attr('opacity', 1)
                 .attr('r', 2)
-                .attr("cx", function(d, i) { return randPoint(50, width-50);})
-                .attr("cy", function(d, i) { return randPoint(175, 225);});
+                .attr("cx", function(d, i) { return d.cx;})
+                .attr("cy", function(d, i) { return d.cy;});
 
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income >= .25) &
@@ -438,6 +526,19 @@
         };
 
         function siftLowDebt () {
+
+            g.selectAll('.dots-title.two')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', .2);
+
+            g.selectAll('.dots-title.three')
+                .classed('highlighted-dots-title', true);
+
+            g.selectAll('.dots-title.four')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', 0);
+
+
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income >= .25) &
                                               (d.percent_monthly_median_income <= .4);})
@@ -446,8 +547,8 @@
                 .delay(function(d, i) { return i * 1; })
                 .attr('opacity', 1)
                 .attr('r', 2)
-                .attr("cx", function(d, i) { return randPoint(100, width-100);})
-                .attr("cy", function(d, i) { return randPoint(250, 300);});
+                .attr("cx", function(d, i) { return d.cx;})
+                .attr("cy", function(d, i) { return d.cy;});
 
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income <= .75) & (d.percent_monthly_median_income > .4);})
@@ -462,6 +563,18 @@
 
 
         function siftMediumDebt () {
+
+            g.selectAll('.dots-title.three')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', .2);
+
+            g.selectAll('.dots-title.four')
+                .classed('highlighted-dots-title', true);
+
+            g.selectAll('.dots-title.five')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', 0);
+
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income <= .75) &
                                               (d.percent_monthly_median_income > .4);})
@@ -470,8 +583,8 @@
                 .delay(function(d, i) { return i * 3; })
                 .attr('opacity', 1)
                 .attr('r', 2)
-                .attr("cx", function(d, i) { return randPoint(150, width-150);})
-                .attr("cy", function(d, i) { return randPoint(325, 375);});
+                .attr("cx", function(d, i) { return d.cx;})
+                .attr("cy", function(d, i) { return d.cy;});
 
             g.selectAll('.dot')
                 .filter(function (d) { return d.percent_monthly_median_income > .75;})
@@ -487,15 +600,23 @@
 
 
         function siftHighDebt () {
+
+            g.selectAll('.dots-title.four')
+                .classed('highlighted-dots-title', false)
+                .attr('opacity', .2);
+
+            g.selectAll('.dots-title.five')
+                .classed('highlighted-dots-title', true);
+
             g.selectAll('.dot')
                 .filter(function (d) { return d.percent_monthly_median_income > .75;})
                 .transition()
                 .duration(100)
-                .delay(function(d, i) { return i * 5; })
+                .delay(function(d, i) { return i * 2; })
                 .attr('opacity', 1)
                 .attr('r', 2)
-                .attr("cx", function(d, i) { return randPoint(200, width-200);})
-                .attr("cy", function(d, i) { return randPoint(400, 450);});
+                .attr("cx", function(d, i) { return d.cx;})
+                .attr("cy", function(d, i) { return d.cy;});
 
         };
 
@@ -601,7 +722,7 @@ var randPoint = function(min, max) {
     // d3.tsv('./data/words.tsv').then(display);
 
 
-var files = ['data/cum_debt.json', 'data/agg_data.json'];
+var files = ['data/cum_debt.json', 'data/agg_data2.json'];
     var promises = [];
 
     files.forEach(function(url, i) {
@@ -614,3 +735,5 @@ var files = ['data/cum_debt.json', 'data/agg_data.json'];
             console.log(promises[1]);
             display(promises);
         });
+
+var monthlyIncome2 = promises[1];

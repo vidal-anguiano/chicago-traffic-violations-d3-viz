@@ -57,6 +57,20 @@
   text-anchor: middle;
 }
 
+#vis .dots-title {
+    font-size:35px;
+    text-anchor: middle;
+    fill: gray;
+
+}
+
+#vis .highlighted-dots-title {
+    opacity: 1;
+    fill: white;
+    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+    font-weight: bold;
+}
+
 .axis path,
 .axis line {
   fill: none;
