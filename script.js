@@ -502,6 +502,16 @@
             svg.selectAll('.stack-legend')
                 .attr('opacity', 0);
 
+            g.selectAll('.pop-bubbles')
+                .attr('r', 0)
+                .attr("opacity", 0);
+
+            g.selectAll('.pop-bubbles-text')
+                .attr('r', 0)
+                .attr("opacity", 0);
+
+
+
 
         };
 
