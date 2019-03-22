@@ -297,6 +297,20 @@
                 i_ = income_level_group[d.income_level];
 
                 return (i_+1)*(25*(i_+1)+70); });
+
+        var dotlabels = g.selectAll('dot-labels').data([{label:'<25%', class_label: 'first'},
+                                                        {label:'25-40%', class_label: 'second'},
+                                                        {label:'40-75%', class_label: 'third'},
+                                                        {label:'>75%', class_label: 'fourth'}])
+            .enter()
+            .append('text')
+            .attr('class', function(d) { return 'dot-labels ' + d.class_label; })
+            .text(function (d, i) { return d.label; })
+            .attr('x', 0)
+            .attr('y', -100)
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('opacity', 0);
         // .attr("cx", function(d) { return xScatterScale(d.monthly_median_income);})
         // .attr("cy", function(d) { return yScatterScale(d.percent_monthly_meddian_income);})
 
@@ -306,61 +320,6 @@
         //     .force('center', d3.forceCenter(width / 2, height / 2))
         //     .force('collision', d3.forceCollide().radius(2))
         //     .on('tick', siftHighDebt);
-
-        var dots_title = g.selectAll('.dotstitle').data([0]);
-        dots_title.enter()
-            .append('text')
-            .attr('class', 'dots-title one')
-            .attr('x', width/2)
-            .attr('y', 38)
-            .text('945K Drivers')
-            .attr('dx', 0)
-            .attr('dy', 0)
-            .attr('opacity',0);
-
-        var dots_title2 = g.selectAll('.dotstitle').data([0]);
-        dots_title2.enter()
-            .append('text')
-            .attr('class', 'dots-title two')
-            .attr('x', width/2)
-            .attr('y', 175)
-            .text('800K Drivers')
-            .attr('dx', 0)
-            .attr('dy', 0)
-            .attr('opacity', 0);
-
-        var dots_title3 = g.selectAll('.dotstitle').data([0]);
-        dots_title3.enter()
-            .append('text')
-            .attr('class', 'dots-title three')
-            .attr('x', width/2)
-            .attr('y', 315)
-            .text('94K Drivers')
-            .attr('dx', 0)
-            .attr('dy', 0)
-            .attr('opacity', 0);
-
-        var dots_title4 = g.selectAll('.dotstitle').data([0]);
-        dots_title4.enter()
-            .append('text')
-            .attr('class', 'dots-title four')
-            .attr('x', width/2)
-            .attr('y', 352)
-            .text('52K Drivers')
-            .attr('dx', 0)
-            .attr('dy', 0)
-            .attr('opacity', 0);
-
-        var dots_title5 = g.selectAll('.dotstitle').data([0]);
-        dots_title5.enter()
-            .append('text')
-            .attr('class', 'dots-title five')
-            .attr('x', width/2)
-            .attr('y', 387)
-            .text('16K Drivers')
-            .attr('dx', 0)
-            .attr('dy', 0)
-            .attr('opacity', 0);
 
     };
 
@@ -609,13 +568,6 @@
             g.selectAll('.pop-bubbles-text')
                 .attr('opacity', 0);
 
-            g.selectAll('.dots-title.one')
-                .classed('highlighted-dots-title', true);
-
-            g.selectAll('.dots-title.two')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', 0);
-
             g.selectAll('.dot')
                 .transition()
                 .duration(400)
@@ -624,6 +576,10 @@
                 .attr('r', .5)
                 .attr("cx", function(d, i) { return randPoint(0, width);})
                 .attr("cy", function(d, i) { return randPoint(0, 50);});
+
+            g.selectAll('.dot-labels.first')
+                .classed('dot-labels-active', false)
+                .attr('opacity', 0);
 
             // g.selectAll('.dot.middle-income')
             //     .transition()
@@ -648,17 +604,6 @@
 
         function siftLowLow () {
 
-            g.selectAll('.dots-title.one')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', .2);
-
-            g.selectAll('.dots-title.two')
-                .classed('highlighted-dots-title', true);
-
-            g.selectAll('.dots-title.three')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', 0);
-
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income < .25);})
                 .transition()
@@ -679,21 +624,22 @@
                 .attr('r', .5)
                 .attr("cx", function(d, i) { return randPoint(0, width);})
                 .attr("cy", function(d, i) { return randPoint(0, 50);});
+
+            g.selectAll('.dot-labels.first')
+                .classed('dot-labels-active', true)
+                .attr('x', 0)
+                .attr('y', 170)
+                .attr('dx', 0)
+                .attr('dy', 0)
+                .attr('opacity', 1);
+
+            g.selectAll('.dot-labels.second')
+                .classed('dot-labels-active', false)
+                .attr('opacity', 0);
+
         };
 
         function siftLowDebt () {
-
-            g.selectAll('.dots-title.two')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', .2);
-
-            g.selectAll('.dots-title.three')
-                .classed('highlighted-dots-title', true);
-
-            g.selectAll('.dots-title.four')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', 0);
-
 
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income >= .25) &
@@ -715,21 +661,22 @@
                 .attr('r', .5)
                 .attr("cx", function(d, i) { return randPoint(0, width);})
                 .attr("cy", function(d, i) { return randPoint(0, 50);});
+
+            g.selectAll('.dot-labels.second')
+                .classed('dot-labels-active', true)
+                .attr('x', 0)
+                .attr('y', 310)
+                .attr('dx', 0)
+                .attr('dy', 0)
+                .attr('opacity', 1);
+
+            g.selectAll('.dot-labels.third')
+                .classed('dot-labels-active', false)
+                .attr('opacity', 0);
         };
 
 
         function siftMediumDebt () {
-
-            g.selectAll('.dots-title.three')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', .2);
-
-            g.selectAll('.dots-title.four')
-                .classed('highlighted-dots-title', true);
-
-            g.selectAll('.dots-title.five')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', 0);
 
             g.selectAll('.dot')
                 .filter(function (d) { return (d.percent_monthly_median_income <= .75) &
@@ -752,17 +699,24 @@
                 .attr("cx", function(d, i) { return randPoint(0, width);})
                 .attr("cy", function(d, i) { return randPoint(0, 50);});
 
+
+            g.selectAll('.dot-labels.third')
+                .classed('dot-labels-active', true)
+                .attr('x', 0)
+                .attr('y', 349)
+                .attr('dx', 0)
+                .attr('dy', 0)
+                .attr('opacity', 1);
+
+            g.selectAll('.dot-labels.fourth')
+                .classed('dot-labels-active', false)
+                .attr('opacity', 0);
+
+
         };
 
 
         function siftHighDebt () {
-
-            g.selectAll('.dots-title.four')
-                .classed('highlighted-dots-title', false)
-                .attr('opacity', .2);
-
-            g.selectAll('.dots-title.five')
-                .classed('highlighted-dots-title', true);
 
             g.selectAll('.dot')
                 .filter(function (d) { return d.percent_monthly_median_income > .75;})
@@ -773,6 +727,15 @@
                 .attr('r', 2)
                 .attr("cx", function(d, i) { return d.cx;})
                 .attr("cy", function(d, i) { return d.cy;});
+
+            g.selectAll('.dot-labels.fourth')
+                .classed('dot-labels-active', true)
+                .attr('x', 0)
+                .attr('y', 380)
+                .attr('dx', 0)
+                .attr('dy', 0)
+                .attr('opacity', 1);
+
 
         };
 
