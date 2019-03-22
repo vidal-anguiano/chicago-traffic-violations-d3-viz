@@ -101,8 +101,10 @@
 
         var cumData = rawData[0];
         var monthlyIncome = rawData[1];
+        var rollingDebt = rawData[2];
+        var finesByGroup = rawData[3];
 
-        setupVis(cumData, monthlyIncome);
+         setupVis(cumData, monthlyIncome, rollingDebt, finesByGroup);
 
         setupSections();
         });
@@ -118,7 +120,7 @@
     *  element for each filler word type.
     * @param histData - binned histogram data
     */
-    var setupVis = function (cumData, monthlyIncome) {
+    var setupVis = function (cumData, monthlyIncome, rollingDebt, finesByGroup) {
 
         // axis
         g.append('g')
@@ -205,6 +207,78 @@
             .attr('opacity', 0)
             .attr('font-weight', 'bold');
 
+        // Section 3.5: Stacked Bars
+        var stack = d3.stack()
+            .keys(["low-income", "middle-income", "high-income"])
+            .order(d3.stackOrderNone)
+            .offset(d3.stackOffsetNone);
+
+        var dataset = stack(rollingDebt);
+        console.log(dataset);
+
+        var colors = ["b33040", "#d25c4d", "#f2b447"];
+        var groups = ['Low-Income', 'Middle-Income', 'High-Income'];
+
+        var stackedLegend = svg.selectAll("stacklegend")
+            .data(dataset)
+            .enter().append("rect")
+            .attr("class", "stack-legend")
+            .attr('x', 50)
+            .attr('y', function(d, i) { return i*-30 + 200; })
+            .attr('height', 20)
+            .attr('width', 20)
+            .style("fill", function(d, i) { return colors[i]; })
+            .attr('opacity', 0);
+
+        var stackedLegendText = svg.selectAll("stacklegendtext")
+            .data(dataset)
+            .enter().append('text')
+            .attr('class','stack-legend')
+            .text(function(d, i) { return groups[i]; })
+            .attr('x', 75)
+            .attr('dx', 0)
+            .attr('y', function(d, i) { return i*-30 + 200; })
+            .attr('dy', 15)
+            .attr('opacity', 0);
+
+
+        var groupsd = svg.selectAll("g.cost")
+            .data(dataset)
+            .enter().append("g")
+            .attr("class", "cost")
+            .style("fill", function(d, i) { return colors[i]; });
+
+        var rect = groupsd.selectAll("rect")
+            .data(function(d) { return d; })
+            .enter()
+            .append("rect")
+            .attr('class','rect')
+            .attr("x", function(d) { return xBarScale(d.data.year) + 20; });
+
+        // Section 4: People
+
+        var pop_bubbles = g.selectAll('popBubbles')
+            .data(finesByGroup)
+            .enter()
+            .append('circle')
+            .attr('class', function(d, i) { return 'pop-bubbles ' + d.income_level; })
+            .attr("r", 0)
+            .attr('cx', width/3)
+            .attr('cy', function(d, i) { return (i+1)*(25*(i+1)+70); });
+
+        var pop_bubbles_text = g.selectAll('popBubbles')
+            .data(finesByGroup)
+            .enter()
+            .append('text')
+            .attr('class', function(d, i) { return 'pop-bubbles-text ' + d.income_level; })
+            .text(function(d, i) { return ('' + d.num_people).slice(0,-3) + "K Drivers"; })
+            .attr('x', function(d, i) { return width/3 + (i+1)*(8*(i+1))+22; })
+            .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
+            .attr('dx', 0)
+            .attr('dy', 5)
+            .style('fill', 'black')
+            .style('font-weight', 'bold')
+            .attr('opacity', 0);
 
         // Section 4: Sand
         var dots = g.selectAll('.dots').data(monthlyIncome);
@@ -294,11 +368,15 @@
         activateFunctions[0] = showTitle;
         activateFunctions[1] = showNews;
         activateFunctions[2] = showBars;
-        activateFunctions[3] = showSand;
-        activateFunctions[4] = siftLowLow;
-        activateFunctions[5] = siftLowDebt;
-        activateFunctions[6] = siftMediumDebt;
-        activateFunctions[7] = siftHighDebt;
+        activateFunctions[3] = showBars;
+        activateFunctions[4] = popBubble;
+        activateFunctions[5] = popBubble;
+        activateFunctions[6] = popBubble;
+        activateFunctions[7] = showSand;
+        activateFunctions[8] = siftLowLow;
+        activateFunctions[9] = siftLowDebt;
+        activateFunctions[10] = siftMediumDebt;
+        activateFunctions[11] = siftHighDebt;
 
 
         // updateFunctions are called while
@@ -310,7 +388,10 @@
         for (var i = 0; i < 9; i++) {
         updateFunctions[i] = function () {};
         }
-        updateFunctions[100] = 'functions here';
+        updateFunctions[3] = updateIncomeBars;
+        updateFunctions[4] =  showHighIncomeGroup;
+        updateFunctions[5] =  showMiddleIncomeGroup;
+        updateFunctions[6] =  showLowIncomeGroup;
     };
 
     /**
@@ -416,7 +497,6 @@
                 .attr('y', 500)
                 .attr("transform", "rotate("+-90+")");
 
-
         g.selectAll('.bars')
             .transition()
             .duration(600)
@@ -443,16 +523,21 @@
                 .duration(400)
                 .attr('opacity', 0);
 
-
             g.selectAll('.dot')
                 .transition()
                 .duration(200)
                 .attr('opacity', 0);
 
+            svg.selectAll('.rect')
+                .attr('opacity', 0);
+
+            svg.selectAll('.stack-legend')
+                .attr('opacity', 0);
+
 
         };
 
-        function showSand() {
+        function popBubble() {
             hideAxis();
             g.selectAll('.bars')
                 .transition()
@@ -471,6 +556,25 @@
                 .transition('title')
                 .duration(600)
                 .attr('y', -100)
+                .attr('opacity', 0);
+
+            svg.selectAll('.rect')
+                .attr('opacity', 0);
+
+            svg.selectAll('.stack-legend')
+                .transition()
+                .duration(400)
+                .attr('opacity', 0);
+        };
+
+        function showSand() {
+
+            g.selectAll('.pop-bubbles')
+                .transition()
+                .duration(0)
+                .attr("opacity", 0);
+
+            g.selectAll('.pop-bubbles-text')
                 .attr('opacity', 0);
 
             g.selectAll('.dots-title.one')
@@ -646,6 +750,69 @@
         .style('opacity', 0);
     };
 
+
+    /**
+    * UPDATE FUNCTIONS
+    *
+    * These will be called within a section
+    * as the user scrolls through it.
+    *
+    * We use an immediate transition to
+    * update visual elements based on
+    * how far the user has scrolled
+    *
+    */
+
+    /**
+    * updateCough - increase/decrease
+    * cough text and color
+    *
+    * @param progress - 0.0 - 1.0 -
+    *  how far user has scrolled in section
+    */
+    function updateIncomeBars(progress) {
+        svg.selectAll('.stack-legend')
+            .attr('opacity', 1);
+
+        svg.selectAll('.rect')
+            .attr("y", function(d) { return yBarScale(d[1]); })
+            .attr("height", function(d) { return yBarScale(d[0]) - yBarScale(d[1]); })
+            .attr("width", xBarScale.bandwidth())
+            .transition()
+            .duration(0)
+            .attr('opacity', progress*1.5);
+    };
+
+    function showHighIncomeGroup(progress) {
+        g.selectAll('.pop-bubbles.high-income')
+            .transition()
+            .duration(0)
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; });
+
+        g.selectAll('.pop-bubbles-text.high-income')
+            .attr('opacity', 1);
+    };
+
+    function showMiddleIncomeGroup(progress) {
+        g.selectAll('.pop-bubbles.middle-income')
+            .transition()
+            .duration(0)
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; });
+
+        g.selectAll('.pop-bubbles-text.middle-income')
+            .attr('opacity', 1);
+    };
+
+    function showLowIncomeGroup(progress) {
+        g.selectAll('.pop-bubbles.low-income')
+            .transition()
+            .duration(0)
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; });
+
+        g.selectAll('.pop-bubbles-text.low-income')
+            .attr('opacity', 1);
+    };
+
     /**
     * activate -
     *
@@ -722,7 +889,7 @@ var randPoint = function(min, max) {
     // d3.tsv('./data/words.tsv').then(display);
 
 
-var files = ['data/cum_debt.json', 'data/agg_data2.json'];
+var files = ['data/cum_debt.json', 'data/agg_data2.json', 'data/year_income_rolling.json', 'data/average_fines_by_group.json'];
     var promises = [];
 
     files.forEach(function(url, i) {
@@ -733,7 +900,10 @@ var files = ['data/cum_debt.json', 'data/agg_data2.json'];
         .then(function (promises) {
             console.log(promises[0]);
             console.log(promises[1]);
+            console.log(promises[2]);
+            console.log(promises[3]);
             display(promises);
         });
 
 var monthlyIncome2 = promises[1];
+ 

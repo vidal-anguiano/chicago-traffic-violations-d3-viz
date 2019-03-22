@@ -64,6 +64,10 @@
 
 }
 
+#vis .tooltip {
+    opacity: 1;
+}
+
 #vis .highlighted-dots-title {
     opacity: 1;
     fill: white;
