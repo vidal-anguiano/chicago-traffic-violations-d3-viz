@@ -285,9 +285,18 @@
         var dotsE = dots.enter()
             .append("circle")
             .attr("class", function (d) { return "dot " + d.income_level; })
-            .attr("r", .8)
+            .attr("r", 3)
             .attr('opacity', 0)
-            .attr("cx", function(d, i) { return randPoint(0, width);});
+            .attr('cx', width/3)
+            .attr('cy', function(d, i) {
+
+                income_level_group = {'high-income': 0,
+                                      'middle-income': 1,
+                                      'low-income': 2};
+
+                i_ = income_level_group[d.income_level];
+
+                return (i_+1)*(25*(i_+1)+70); });
         // .attr("cx", function(d) { return xScatterScale(d.monthly_median_income);})
         // .attr("cy", function(d) { return yScatterScale(d.percent_monthly_meddian_income);})
 
@@ -565,13 +574,36 @@
                 .transition()
                 .duration(400)
                 .attr('opacity', 0);
+
+            g.select('.dots-title.one')
+                .classed('highlighted-dots-title', false)
+                .transition()
+                .duration(400)
+                .attr('opacity', 0);
+
+            g.selectAll('.dot')
+                .attr('opacity', 0)
+                .transition()
+                .duration(200)
+                .attr('r', 3)
+                .attr('cx', width/3)
+                .attr('cy', function(d, i) {
+
+                    income_level_group = {'high-income': 0,
+                                          'middle-income': 1,
+                                          'low-income': 2};
+
+                    i_ = income_level_group[d.income_level];
+
+                    return (i_+1)*(25*(i_+1)+70); });;
         };
 
         function showSand() {
 
             g.selectAll('.pop-bubbles')
                 .transition()
-                .duration(0)
+                .duration(2500)
+                .attr('r', 0)
                 .attr("opacity", 0);
 
             g.selectAll('.pop-bubbles-text')
@@ -586,12 +618,32 @@
 
             g.selectAll('.dot')
                 .transition()
-                .duration(100)
+                .duration(400)
                 .delay(function(d, i) { return i * .2; })
                 .attr('opacity', 1)
                 .attr('r', .5)
                 .attr("cx", function(d, i) { return randPoint(0, width);})
                 .attr("cy", function(d, i) { return randPoint(0, 50);});
+
+            // g.selectAll('.dot.middle-income')
+            //     .transition()
+            //     .duration(400)
+            //     .delay(1000)
+            //     .delay(function(d, i) { return i * .2; })
+            //     .attr('opacity', 1)
+            //     .attr('r', .5)
+            //     .attr("cx", function(d, i) { return randPoint(0, width);})
+            //     .attr("cy", function(d, i) { return randPoint(0, 50);});
+
+            // g.selectAll('.dot.low-income')
+            //     .transition()
+            //     .duration(400)
+            //     .delay(1600)
+            //     .delay(function(d, i) { return i * .2; })
+            //     .attr('opacity', 1)
+            //     .attr('r', .5)
+            //     .attr("cx", function(d, i) { return randPoint(0, width);})
+            //     .attr("cy", function(d, i) { return randPoint(0, 50);});
         };
 
         function siftLowLow () {
@@ -781,33 +833,68 @@
             .transition()
             .duration(0)
             .attr('opacity', progress*1.5);
+
+        g.selectAll('.pop-bubbles.high-income')
+            .transition()
+            .duration(50)
+            .attr("opacity", 0);
+
+        g.selectAll('.pop-bubbles-text.high-income')
+            .transition()
+            .duration(50)
+            .attr('opacity', 0);
     };
 
     function showHighIncomeGroup(progress) {
         g.selectAll('.pop-bubbles.high-income')
             .transition()
             .duration(0)
-            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; });
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; })
+            .attr("opacity", 1);
 
         g.selectAll('.pop-bubbles-text.high-income')
             .attr('opacity', 1);
+
+
+        g.selectAll('.pop-bubbles.middle-income')
+            .transition()
+            .duration(50)
+            .attr("opacity", 0);
+
+        g.selectAll('.pop-bubbles-text.middle-income')
+            .transition()
+            .duration(50)
+            .attr('opacity', 0);
+
     };
 
     function showMiddleIncomeGroup(progress) {
         g.selectAll('.pop-bubbles.middle-income')
             .transition()
             .duration(0)
-            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; });
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; })
+            .attr("opacity", 1);
 
         g.selectAll('.pop-bubbles-text.middle-income')
             .attr('opacity', 1);
+
+        g.selectAll('.pop-bubbles.low-income')
+            .transition()
+            .duration(50)
+            .attr("opacity", 0);
+
+        g.selectAll('.pop-bubbles-text.low-income')
+            .transition()
+            .duration(50)
+            .attr('opacity', 0);
     };
 
     function showLowIncomeGroup(progress) {
         g.selectAll('.pop-bubbles.low-income')
             .transition()
             .duration(0)
-            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; });
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; })
+            .attr("opacity", 1);
 
         g.selectAll('.pop-bubbles-text.low-income')
             .attr('opacity', 1);
