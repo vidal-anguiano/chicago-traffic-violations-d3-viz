@@ -103,6 +103,7 @@
         var monthlyIncome = rawData[1];
         var rollingDebt = rawData[2];
         var finesByGroup = rawData[3];
+        
 
          setupVis(cumData, monthlyIncome, rollingDebt, finesByGroup);
 
@@ -216,7 +217,7 @@
         var dataset = stack(rollingDebt);
         console.log(dataset);
 
-        var colors = ["b33040", "#d25c4d", "#f2b447"];
+        var colors = ["#173F5F", "#F6D55C", "#ED553B"];
         var groups = ['Low-Income', 'Middle-Income', 'High-Income'];
 
         var stackedLegend = svg.selectAll("stacklegend")
@@ -296,7 +297,51 @@
 
                 i_ = income_level_group[d.income_level];
 
-                return (i_+1)*(25*(i_+1)+70); });
+                return (i_+1)*(25*(i_+1)+70); })
+            .on("mouseover", function() { tooltip.style("display", null); })
+            .on("mouseout", function() { tooltip.style("display", "none");
+                                         d3.select(this).attr('r',2); })
+            .on("mousemove", function(d) {
+                var xPosition = d3.mouse(this)[0] - 15;
+                var yPosition = d3.mouse(this)[1] - 70;
+                tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+                tooltip.select("#line1").text('Total Fines ------------- $' + numberWithCommas(Math.round(d.fines)));
+                tooltip.select("#line2").text('Monthly Income ------- $' + numberWithCommas(d.monthly_median_income));
+                tooltip.select("#line3").text('% of Monthly Income -- ' + round(d.percent_monthly_median_income*100, 1) + '%');
+                d3.select(this).attr('r',4);
+            });
+
+        var tooltip = svg.append("g")
+            .attr("class", "tooltip")
+            .style("display", "none");
+
+        tooltip.append("rect")
+            .attr("width", 240)
+            .attr("height", 50)
+            .attr("fill", "white")
+            .style("opacity", .8);
+
+        tooltip.append("text")
+            .attr('class', 'tooltip')
+            .attr("id", 'line1')
+            .attr("x", 15)
+            .attr("dy", 15)
+            .attr("dx", -10);
+
+        tooltip.append("text")
+            .attr('class', 'tooltip')
+            .attr('id', 'line2')
+            .attr("x", 15)
+            .attr("dy", 30)
+            .attr("dx", -10);
+
+        tooltip.append("text")
+            .attr('class', 'tooltip')
+            .attr('id', 'line3')
+            .attr("x", 15)
+            .attr("dy", 45)
+            .attr("dx", -10);
+
 
         var dotlabels = g.selectAll('dot-labels').data([{label:'<25%', class_label: 'first'},
                                                         {label:'25-40%', class_label: 'second'},
@@ -619,7 +664,7 @@
                 .transition()
                 .duration(100)
                 .delay(function(d, i) { return i * .5; })
-                .attr('opacity', 1)
+                .attr('opacity', function(d) { return 1*(d.percent_monthly_median_income/.25 + .20); })
                 .attr('r', 2)
                 .attr("cx", function(d, i) { return d.cx;})
                 .attr("cy", function(d, i) { return d.cy;});
@@ -657,7 +702,7 @@
                 .transition()
                 .duration(100)
                 .delay(function(d, i) { return i * 1; })
-                .attr('opacity', 1)
+                .attr('opacity', function(d) { return 1*((d.percent_monthly_median_income-.25)/.15 + .20); })
                 .attr('r', 2)
                 .attr("cx", function(d, i) { return d.cx;})
                 .attr("cy", function(d, i) { return d.cy;});
@@ -694,7 +739,7 @@
                 .transition()
                 .duration(100)
                 .delay(function(d, i) { return i * 3; })
-                .attr('opacity', 1)
+                .attr('opacity', function(d) { return 1*((d.percent_monthly_median_income-.40)/.35 + .20); })
                 .attr('r', 2)
                 .attr("cx", function(d, i) { return d.cx;})
                 .attr("cy", function(d, i) { return d.cy;});
@@ -733,8 +778,7 @@
                 .transition()
                 .duration(100)
                 .delay(function(d, i) { return i * 2; })
-                .attr('opacity', 1)
-                .attr('r', 2)
+                .attr('opacity', function(d) { return 1*((d.percent_monthly_median_income-.75)/.15 + .20); })                           .attr('r', 2)
                 .attr("cx", function(d, i) { return d.cx;})
                 .attr("cy", function(d, i) { return d.cy;});
 
@@ -871,6 +915,27 @@
 
         g.selectAll('.pop-bubbles-text.low-income')
             .attr('opacity', 1);
+
+        g.selectAll('.pop-bubbles.middle-income')
+            .transition()
+            .duration(0)
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
+            .attr("opacity", 1);
+
+        g.selectAll('.pop-bubbles-text.middle-income')
+            .attr('opacity', 1);
+
+        g.selectAll('.pop-bubbles.high-income')
+            .transition()
+            .duration(0)
+            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
+            .attr("opacity", 1);
+
+        g.selectAll('.pop-bubbles-text.high-income')
+            .attr('opacity', 1);
+
+
+
     };
 
     /**
@@ -967,3 +1032,11 @@ var files = ['data/cum_debt.json', 'data/agg_data2.json', 'data/year_income_roll
 
 var monthlyIncome2 = promises[1];
  
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function round(value, precision) {
+    var multiplier = Math.pow(10, precision || 0);
+    return Math.round(value * multiplier) / multiplier;
+}
