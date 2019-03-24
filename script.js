@@ -137,13 +137,18 @@
             .attr('opacity', 0);
 
         main_title.append('tspan')
-            .text('Visualizing Chicago')
+            .text('Visualizing Debts')
             .attr('x', width / 2)
-            .attr('y', height / 3);
+            .attr('y',200);
         main_title.append('tspan')
-            .text('Traffic Tickets')
+            .text("From Chicago's Traffic")
             .attr('x', width / 2)
-            .attr('y', height / 2);
+            .attr('y', 270);
+        main_title.append('tspan')
+            .text('Violation Fines')
+            .attr('x', width / 2)
+            .attr('y',340);
+
 
         // Section 2: Propublica image
         var imgs = g.append('image')
@@ -258,7 +263,7 @@
         var scrollTitle = g.selectAll('scroll-title')
             .data([0]).enter()
             .append('text')
-            .text('How many people are indebted to the City?')
+            .text('How many drivers are indebted to the City?')
             .attr('x', width/2)
             .attr('y', height + 100)
             .attr('dx',0)
@@ -278,7 +283,7 @@
         var scrollTitle3 = g.selectAll('scoll-title3')
             .data([0]).enter()
             .append('text')
-            .text('But wait... How drastically does this affect ones financial stability?')
+            .text("But wait... How drastically can fines affect one's financial stability?")
             .attr('x', -400)
             .attr('y', 50)
             .attr('dx', 0)
@@ -435,6 +440,8 @@
         activateFunctions[12] = siftLowDebt;
         activateFunctions[13] = siftMediumDebt;
         activateFunctions[14] = siftHighDebt;
+        activateFunctions[15] = blankSection;
+        activateFunctions[16] = blankSection;
 
 
         // updateFunctions are called while
@@ -450,7 +457,7 @@
         updateFunctions[4] =  showHighIncomeGroup;
         updateFunctions[5] =  showMiddleIncomeGroup;
         updateFunctions[6] =  showLowIncomeGroup;
-  
+        updateFunctions[10] = blankSection; 
 
     };
 
