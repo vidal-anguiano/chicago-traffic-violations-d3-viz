@@ -363,7 +363,7 @@
             .style("display", "none");
 
         tooltip.append("rect")
-            .attr("width", 220)
+            .attr("width", 240)
             .attr("height", 50)
             .attr("fill", "white")
             .style("opacity", .8); 
@@ -450,7 +450,7 @@
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 9; i++) {
+        for (var i = 0; i < 20; i++) {
         updateFunctions[i] = function () {};
         }
         updateFunctions[3] = updateIncomeBars;
