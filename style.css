@@ -43,7 +43,7 @@
 }
 
 #extra-space {
-  height: 0px;
+  height: 300px;
 }
 
 #vis {
@@ -68,6 +68,11 @@
     font-weight: bold;
 }
 
+#vis .stack-legend-text {
+    font-family:DIN Condensed;
+    font-weight: light;
+    font-size: 18px;
+}
 
 #vis .main-title {
   font-size: 80px;
