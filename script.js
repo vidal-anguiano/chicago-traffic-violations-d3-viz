@@ -131,6 +131,7 @@
         g.select('.x.axis').style('opacity', 0);
 
         // Section 1: Title
+
         var main_title = g.append('text')
             .attr('class', 'main-title')
             .attr('opacity', 0);
@@ -152,7 +153,7 @@
             .attr('y', 500)
             .attr('width', 400)
             .attr('height', 400)
-            .attr("transform", "rotate("+-90+")");;
+            .attr("transform", "rotate("+-90+")");
 
         // Section 3: Cumulative Debt BarChart
         var bars = g.selectAll('.bars').data(cumData);
@@ -197,16 +198,13 @@
         var bartitle = g.selectAll('.bartitle').data([0]);
         bartitle.enter()
             .append('text')
-            .attr('class','bartitle')
+            .attr('class','bartitle small-title')
             .text('Cumulative Debt for All Chicagoans')
-            .attr('x', 90)
+            .attr('x', width/2)
             .attr('dx', 0)
             .attr('y', height)
             .attr('dy', 0)
-            .style('font-size', '25px')
-            .attr('font-family', 'Arial')
-            .attr('opacity', 0)
-            .attr('font-weight', 'bold');
+            .attr('opacity', 0);
 
         // Section 3.5: Stacked Bars
         var stack = d3.stack()
@@ -223,7 +221,7 @@
         var stackedLegend = svg.selectAll("stacklegend")
             .data(dataset)
             .enter().append("rect")
-            .attr("class", "stack-legend")
+            .attr("class", "stack-legend-rect")
             .attr('x', 50)
             .attr('y', function(d, i) { return i*-30 + 200; })
             .attr('height', 20)
@@ -234,7 +232,7 @@
         var stackedLegendText = svg.selectAll("stacklegendtext")
             .data(dataset)
             .enter().append('text')
-            .attr('class','stack-legend')
+            .attr('class','stack-legend-text')
             .text(function(d, i) { return groups[i]; })
             .attr('x', 75)
             .attr('dx', 0)
@@ -256,6 +254,37 @@
             .attr('class','rect')
             .attr("x", function(d) { return xBarScale(d.data.year) + 20; });
 
+
+        var scrollTitle = g.selectAll('scroll-title')
+            .data([0]).enter()
+            .append('text')
+            .text('How many people are indebted to the City?')
+            .attr('x', width/2)
+            .attr('y', height + 100)
+            .attr('dx',0)
+            .attr('dy', 0)
+            .attr('class', 'scroll-title small-title');
+
+        var scrollTitle2 = g.selectAll('scroll-title2')
+            .data([0]).enter()
+            .append('text')
+            .text('How much is owed to the City?')
+            .attr('x', -400)
+            .attr('y', 50)
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('class', 'scroll-title2 small-title');
+
+        var scrollTitle3 = g.selectAll('scoll-title3')
+            .data([0]).enter()
+            .append('text')
+            .text('But wait... How drastically does this affect ones financial stability?')
+            .attr('x', -400)
+            .attr('y', 50)
+            .attr('dx', 0)
+            .attr('dy', 0)
+            .attr('class', 'scroll-title3 small-title2');
+
         // Section 4: People
 
         var pop_bubbles = g.selectAll('popBubbles')
@@ -271,15 +300,28 @@
             .data(finesByGroup)
             .enter()
             .append('text')
-            .attr('class', function(d, i) { return 'pop-bubbles-text ' + d.income_level; })
-            .text(function(d, i) { return ('' + d.num_people).slice(0,-3) + "K Drivers"; })
-            .attr('x', function(d, i) { return width/3 + (i+1)*(8*(i+1))+22; })
+            .attr('class', function(d, i) { return 'bubbles-text ' + d.income_level; })
+            .text(function(d, i) { return ('' + d.num_people).slice(0,-3) + "K"; })
+            .attr('x', function(d, i) { return width/3; })
             .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
             .attr('dx', 0)
             .attr('dy', 5)
-            .style('fill', 'black')
-            .style('font-weight', 'bold')
             .attr('opacity', 0);
+
+
+        var debt_text = g.selectAll('debtBubbles')
+            .data(finesByGroup)
+            .enter()
+            .append('text')
+            .attr('class', function(d, i) { return 'debt-text ' + d.income_level; })
+            .text(function(d, i) { return ('$' + ('' + Math.round(d.total_fines)).slice(0,-6) + 'M'); })
+            .attr('x', function(d, i) { return width*.75; })
+            .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
+            .attr('dx', 0)
+            .attr('dy', 10)
+            .style('font-size', '0x')
+            .attr('opacity', 0);
+
 
         // Section 4: Sand
         var dots = g.selectAll('.dots').data(monthlyIncome);
@@ -316,10 +358,10 @@
             .style("display", "none");
 
         tooltip.append("rect")
-            .attr("width", 240)
+            .attr("width", 220)
             .attr("height", 50)
             .attr("fill", "white")
-            .style("opacity", .8);
+            .style("opacity", .8); 
 
         tooltip.append("text")
             .attr('class', 'tooltip')
@@ -332,14 +374,14 @@
             .attr('class', 'tooltip')
             .attr('id', 'line2')
             .attr("x", 15)
-            .attr("dy", 30)
+            .attr("dy", 32)
             .attr("dx", -10);
 
         tooltip.append("text")
             .attr('class', 'tooltip')
             .attr('id', 'line3')
             .attr("x", 15)
-            .attr("dy", 45)
+            .attr("dy", 47)
             .attr("dx", -10);
 
 
@@ -385,11 +427,14 @@
         activateFunctions[4] = popBubble;
         activateFunctions[5] = popBubble;
         activateFunctions[6] = popBubble;
-        activateFunctions[7] = showSand;
-        activateFunctions[8] = siftLowLow;
-        activateFunctions[9] = siftLowDebt;
-        activateFunctions[10] = siftMediumDebt;
-        activateFunctions[11] = siftHighDebt;
+        activateFunctions[7] = replaceTitle;
+        activateFunctions[8] = debtOwedbyGroup;
+        activateFunctions[9] = transition;
+        activateFunctions[10] = showSand;
+        activateFunctions[11] = siftLowLow;
+        activateFunctions[12] = siftLowDebt;
+        activateFunctions[13] = siftMediumDebt;
+        activateFunctions[14] = siftHighDebt;
 
 
         // updateFunctions are called while
@@ -405,6 +450,8 @@
         updateFunctions[4] =  showHighIncomeGroup;
         updateFunctions[5] =  showMiddleIncomeGroup;
         updateFunctions[6] =  showLowIncomeGroup;
+  
+
     };
 
     /**
@@ -421,6 +468,8 @@
     * user may be scrolling up or down).
     *
     */
+        function blankSection() {
+        };
 
     /**
     * showTitle - initial title
@@ -452,6 +501,8 @@
      *
      */
         function showNews() {
+
+    
         hideAxis();
             g.selectAll('.main-title')
                 .transition()
@@ -544,21 +595,35 @@
             svg.selectAll('.rect')
                 .attr('opacity', 0);
 
-            svg.selectAll('.stack-legend')
+            svg.selectAll('.stack-legend-rect')
+                .attr('opacity', 0);
+
+            svg.selectAll('.stack-legend-text')
                 .attr('opacity', 0);
 
             g.selectAll('.pop-bubbles')
                 .attr('r', 0)
                 .attr("opacity", 0);
 
-            g.selectAll('.pop-bubbles-text')
+            g.selectAll('.debt-bubbles')
                 .attr('r', 0)
                 .attr("opacity", 0);
 
 
+            g.selectAll('.bubbles-text')
+                .attr('r', 0)
+                .attr("opacity", 0);
+
+            g.selectAll('.scroll-title')
+                .transition('scroll-title')
+                .duration(400)
+                .delay(0)
+                .attr('y', height + 100)
+                .attr('opacity', 0);
 
 
         };
+
 
         function popBubble() {
             hideAxis();
@@ -584,16 +649,142 @@
             svg.selectAll('.rect')
                 .attr('opacity', 0);
 
-            svg.selectAll('.stack-legend')
+            svg.selectAll('.stack-legend-rect')
+                .transition()
+                .duration(200)
+                .attr('y', function(d, i) { return i*-30 + 120; })
+                .attr('x', 25)
+                .attr('opacity', 1);
+
+            svg.selectAll('.stack-legend-text')
+                .transition()
+                .duration(200)
+                .attr('y', function(d, i) { return i*-30 + 120; })
+                .attr('x', 50)
+                .attr('opacity', 1);
+
+            g.selectAll('.scroll-title')
+                .transition('scroll-title')
+                .duration(400)
+                .delay(0)
+                .attr('y', 50)
+                .attr('opacity', 1);
+
+        };
+
+        function replaceTitle() {
+                g.selectAll('.scroll-title')
+                    .transition()
+                    .duration(400)
+                    .attr('x', width/2)
+                .attr('opacity', 1);
+
+            g.selectAll('.scroll-title2')
                 .transition()
                 .duration(400)
+                .attr('x', -400)
                 .attr('opacity', 0);
 
-            g.select('.dots-title.one')
-                .classed('highlighted-dots-title', false)
+            g.selectAll('.debt-text')
+                .transition()
+                .duration(500)
+                .delay(200)
+                .style('font-size','0px')
+                .attr('opacity', 0);
+
+        };
+
+        function debtOwedbyGroup() {
+            g.selectAll('.scroll-title')
                 .transition()
                 .duration(400)
+                .attr('x', width*2)
                 .attr('opacity', 0);
+
+            g.selectAll('.scroll-title2')
+                .transition()
+                .duration(400)
+                .attr('x', width/2)
+                .attr('opacity', 1);
+
+            g.selectAll('.debt-text')
+                .transition()
+                .duration(500)
+                .delay(600)
+                .style('font-size','40px')
+                .attr('opacity', 1);
+
+            g.selectAll('.scroll-title3')
+                .transition()
+                .duration(400)
+                .attr('x', -400)
+                .attr('opacity', 0);
+
+            g.selectAll('.pop-bubbles')
+                .transition()
+                .duration(0)
+                .attr("opacity", 1);
+
+            g.selectAll('.image2')
+                .attr('opacity', 0);
+
+            svg.selectAll('.stack-legend-rect')
+                .attr('opacity', 1);
+
+            svg.selectAll('.stack-legend-text')
+                .attr('opacity', 1);
+
+
+
+
+        };
+
+        function transition() {
+
+            g.selectAll('.scroll-title2')
+                .transition()
+                .duration(400)
+                .attr('x', width + 400)
+                .attr('opacity', 0);
+
+            g.selectAll('.scroll-title3')
+                .transition()
+                .duration(400)
+                .attr('x', width/2)
+                .attr('opacity', 1);
+
+            g.selectAll('.debt-text')
+                .transition()
+                .duration(300)
+                .style('font-size','40px')
+                .attr('opacity', .1);
+
+            g.selectAll('.pop-bubbles.middle-income')
+                .transition()
+                .duration(0)
+                .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
+                .attr("opacity", .2);
+
+            g.selectAll('.bubbles-text.middle-income')
+                .attr('opacity', 1);
+
+            g.selectAll('.pop-bubbles.high-income')
+                .transition()
+                .duration(0)
+                .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
+                .attr("opacity", .2);
+
+            g.selectAll('.bubbles-text.high-income')
+                .attr('opacity', 1);
+
+            g.selectAll('.pop-bubbles.low-income')
+                .transition()
+                .duration(0)
+                .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
+                .attr("opacity", .2);
+
+            g.selectAll('.bubbles-text.low-income')
+                .attr('opacity', 1); 
 
             g.selectAll('.dot')
                 .attr('opacity', 0)
@@ -609,10 +800,73 @@
 
                     i_ = income_level_group[d.income_level];
 
-                    return (i_+1)*(25*(i_+1)+70); });;
+                    return (i_+1)*(25*(i_+1)+70); })
+                .attr('opacity',0);
+
+            svg.selectAll('.stack-legend-rect')
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
+                .attr('y', function(d, i) { return i*-30 + 120; })
+                .attr('x', 25)
+                .attr('opacity', .05);
+
+            svg.selectAll('.stack-legend-text')
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
+                .attr('y', function(d, i) { return i*-30 + 120; })
+                .attr('x', 50)
+                .attr('opacity', .05);
+
+
+            var imgs2 = g.append('image')
+                .attr("class", "image2")
+                .attr("xlink:href", "data/calendar.png")
+                .attr('x', 95)
+                .attr('y', 70)
+                .attr('width', 450)
+                .attr('height', 450)
+                .attr('opacity', .7);
+
         };
 
         function showSand() {
+
+            svg.selectAll('.stack-legend-rect')
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
+                .attr('y', function(d, i) { return i*-30 + 500; })
+                .attr('x', 50)
+                .attr('opacity', 1);
+
+            svg.selectAll('.stack-legend-text')
+                .transition()
+                .duration(600)
+                .attr('opacity', 1)
+                .attr('y', function(d, i) { return i*-30 + 500; })
+                .attr('x', 75)
+                .attr('opacity', 1);
+
+            g.selectAll('.image2')
+                .attr('opacity', 0)
+                .attr('x', 700)
+                .attr('y', 700);
+
+
+            g.selectAll('.scroll-title3')
+                .transition()
+                .duration(400)
+                .attr('x', width/2)
+                .attr('opacity', 0);
+
+  
+            g.selectAll('.debt-text')
+                .transition()
+                .duration(300)
+                .style('font-size','40px')
+                .attr('opacity', 0);
 
             g.selectAll('.pop-bubbles')
                 .transition()
@@ -620,7 +874,7 @@
                 .attr('r', 0)
                 .attr("opacity", 0);
 
-            g.selectAll('.pop-bubbles-text')
+            g.selectAll('.bubbles-text')
                 .attr('opacity', 0);
 
             g.selectAll('.dot')
@@ -840,8 +1094,15 @@
     *  how far user has scrolled in section
     */
     function updateIncomeBars(progress) {
-        svg.selectAll('.stack-legend')
-            .attr('opacity', 1);
+        svg.selectAll('.stack-legend-rect')
+            .attr('opacity', 1)
+            .attr('y', function(d, i) { return i*-30 + 200; })
+            .attr('x', 50);
+
+        svg.selectAll('.stack-legend-text')
+            .attr('opacity', 1)
+            .attr('y', function(d, i) { return i*-30 + 200; })
+            .attr('x', 75);
 
         svg.selectAll('.rect')
             .attr("y", function(d) { return yBarScale(d[1]); })
@@ -856,11 +1117,12 @@
             .duration(50)
             .attr("opacity", 0);
 
-        g.selectAll('.pop-bubbles-text.high-income')
+        g.selectAll('.bubbles-text.high-income')
             .transition()
             .duration(50)
             .attr('opacity', 0);
     };
+
 
     function showHighIncomeGroup(progress) {
         g.selectAll('.pop-bubbles.high-income')
@@ -869,7 +1131,7 @@
             .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; })
             .attr("opacity", 1);
 
-        g.selectAll('.pop-bubbles-text.high-income')
+        g.selectAll('.bubbles-text.high-income')
             .attr('opacity', 1);
 
 
@@ -878,7 +1140,7 @@
             .duration(50)
             .attr("opacity", 0);
 
-        g.selectAll('.pop-bubbles-text.middle-income')
+        g.selectAll('.bubbles-text.middle-income')
             .transition()
             .duration(50)
             .attr('opacity', 0);
@@ -892,7 +1154,7 @@
             .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; })
             .attr("opacity", 1);
 
-        g.selectAll('.pop-bubbles-text.middle-income')
+        g.selectAll('.bubbles-text.middle-income')
             .attr('opacity', 1);
 
         g.selectAll('.pop-bubbles.low-income')
@@ -900,7 +1162,7 @@
             .duration(50)
             .attr("opacity", 0);
 
-        g.selectAll('.pop-bubbles-text.low-income')
+        g.selectAll('.bubbles-text.low-income')
             .transition()
             .duration(50)
             .attr('opacity', 0);
@@ -913,30 +1175,11 @@
             .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people))*progress; })
             .attr("opacity", 1);
 
-        g.selectAll('.pop-bubbles-text.low-income')
+        g.selectAll('.bubbles-text.low-income')
             .attr('opacity', 1);
-
-        g.selectAll('.pop-bubbles.middle-income')
-            .transition()
-            .duration(0)
-            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
-            .attr("opacity", 1);
-
-        g.selectAll('.pop-bubbles-text.middle-income')
-            .attr('opacity', 1);
-
-        g.selectAll('.pop-bubbles.high-income')
-            .transition()
-            .duration(0)
-            .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
-            .attr("opacity", 1);
-
-        g.selectAll('.pop-bubbles-text.high-income')
-            .attr('opacity', 1);
-
-
-
     };
+
+
 
     /**
     * activate -

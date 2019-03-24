@@ -19,15 +19,23 @@
 
 .step {
   margin-bottom: 200px;
-  font-family: "TiemposTextWeb-Regular","Georgia";
+  font-family: Arial;
   font-size: 16px;
   line-height: 23px;
   color: #767678;
 }
 
+.space {
+    margin-bottom: 200px;
+    font-family: "TiemposTextWeb-Regular","Georgia";
+    font-size: 16px;
+    line-height: 23px;
+    color: white;
+}
+
 #sections .title {
-  font-family: Arial,Helvetica,"san-serif";
-  font-size: 16px;
+    font-family: DIN Condensed;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 2px;
   color: #262626;
@@ -46,9 +54,24 @@
   margin-left: 0;
 }
 
+#vis .small-title {
+    font-size: 45px;
+    font-family: DIN Condensed;;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
+#vis .small-title2 {
+    font-size: 28px;
+    font-family: DIN Condensed;;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
+
 #vis .main-title {
-  font-size: 60px;
-  font-family: Arial,Helvetica,"san-serif";;
+  font-size: 80px;
+  font-family:DIN Condensed;
   text-anchor: middle;
 }
 
@@ -64,6 +87,18 @@
 
 }
 
+#vis .bubbles-text {
+    fill: white;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
+#vis .debt-text {
+    fill: black;
+    text-anchor: middle;
+    font-weight: bold;
+}
+
 #vis .tooltip {
     opacity: 1;
     text-anchor: left;
@@ -73,15 +108,17 @@
 
 #vis .dot-labels-active {
     opacity: 1;
-    fill: white;
+    fill: black;
     font-size:20px;
-    text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
-    font-weight: bold;
+    font-family: DIN Condensed;
+        font-weight: bold;
 }
 
 
 #vis .tooltip {
     opacity: 1;
+    font-family: DIN Condensed;
+    font-size: 20px;
 }
 
 .axis path,
