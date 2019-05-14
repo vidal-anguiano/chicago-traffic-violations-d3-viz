@@ -771,7 +771,7 @@
                 .transition()
                 .duration(0)
                 .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
-                .attr("opacity", .2);
+                .attr("opacity", 1);
 
             g.selectAll('.bubbles-text.middle-income')
                 .attr('opacity', 1);
@@ -780,7 +780,7 @@
                 .transition()
                 .duration(0)
                 .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
-                .attr("opacity", .2);
+                .attr("opacity", 1);
 
             g.selectAll('.bubbles-text.high-income')
                 .attr('opacity', 1);
@@ -789,7 +789,7 @@
                 .transition()
                 .duration(0)
                 .attr("r", function(d, i) { return (100*Math.sqrt(d.percent_of_people)); })
-                .attr("opacity", .2);
+                .attr("opacity", 1);
 
             g.selectAll('.bubbles-text.low-income')
                 .attr('opacity', 1);
@@ -835,7 +835,7 @@
                 .attr('y', 70)
                 .attr('width', 450)
                 .attr('height', 450)
-                .attr('opacity', .7);
+                .attr('opacity', .9);
 
         };
 
@@ -880,7 +880,7 @@
                 .transition()
                 .duration(2500)
                 .attr('r', 0)
-                .attr("opacity", 0);
+                .attr("opacity", 1);
 
             g.selectAll('.bubbles-text')
                 .attr('opacity', 0);
