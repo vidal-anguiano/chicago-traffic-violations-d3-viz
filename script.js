@@ -290,43 +290,6 @@
             .attr('dy', 0)
             .attr('class', 'scroll-title3 small-title2');
 
-        // Section 4: People
-
-        var pop_bubbles = g.selectAll('popBubbles')
-            .data(finesByGroup)
-            .enter()
-            .append('circle')
-            .attr('class', function(d, i) { return 'pop-bubbles ' + d.income_level; })
-            .attr("r", 0)
-            .attr('cx', width/3)
-            .attr('cy', function(d, i) { return (i+1)*(25*(i+1)+70); });
-
-        var pop_bubbles_text = g.selectAll('popBubbles')
-            .data(finesByGroup)
-            .enter()
-            .append('text')
-            .attr('class', function(d, i) { return 'bubbles-text ' + d.income_level; })
-            .text(function(d, i) { return ('' + d.num_people).slice(0,-3) + "K"; })
-            .attr('x', function(d, i) { return width/3; })
-            .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
-            .attr('dx', 0)
-            .attr('dy', 5)
-            .attr('opacity', 0);
-
-
-        var debt_text = g.selectAll('debtBubbles')
-            .data(finesByGroup)
-            .enter()
-            .append('text')
-            .attr('class', function(d, i) { return 'debt-text ' + d.income_level; })
-            .text(function(d, i) { return ('$' + ('' + Math.round(d.total_fines)).slice(0,-6) + 'M'); })
-            .attr('x', function(d, i) { return width*.75; })
-            .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
-            .attr('dx', 0)
-            .attr('dy', 10)
-            .style('font-size', '0x')
-            .attr('opacity', 0);
-
 
         // Section 4: Sand
         var dots = g.selectAll('.dots').data(monthlyIncome);
@@ -412,6 +375,44 @@
         //     .force('center', d3.forceCenter(width / 2, height / 2))
         //     .force('collision', d3.forceCollide().radius(2))
         //     .on('tick', siftHighDebt);
+
+
+        // Section 4: People
+
+        var pop_bubbles = g.selectAll('popBubbles')
+            .data(finesByGroup)
+            .enter()
+            .append('circle')
+            .attr('class', function(d, i) { return 'pop-bubbles ' + d.income_level; })
+            .attr("r", 0)
+            .attr('cx', width/3)
+            .attr('cy', function(d, i) { return (i+1)*(25*(i+1)+70); });
+
+        var pop_bubbles_text = g.selectAll('popBubbles')
+            .data(finesByGroup)
+            .enter()
+            .append('text')
+            .attr('class', function(d, i) { return 'bubbles-text ' + d.income_level; })
+            .text(function(d, i) { return ('' + d.num_people).slice(0,-3) + "K"; })
+            .attr('x', function(d, i) { return width/3; })
+            .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
+            .attr('dx', 0)
+            .attr('dy', 5)
+            .attr('opacity', 0);
+
+
+        var debt_text = g.selectAll('debtBubbles')
+            .data(finesByGroup)
+            .enter()
+            .append('text')
+            .attr('class', function(d, i) { return 'debt-text ' + d.income_level; })
+            .text(function(d, i) { return ('$' + ('' + Math.round(d.total_fines)).slice(0,-6) + 'M'); })
+            .attr('x', function(d, i) { return width*.75; })
+            .attr('y', function(d, i) { return (i+1)*(25*(i+1)+70); })
+            .attr('dx', 0)
+            .attr('dy', 10)
+            .style('font-size', '0x')
+            .attr('opacity', 0);
 
     };
 
