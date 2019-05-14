@@ -34,8 +34,8 @@
 }
 
 #sections .title {
-    font-family: DIN Condensed;
-  font-size: 20px;
+    font-family: Arial;
+  font-size: 16px;
   font-weight: bold;
   margin-bottom: 2px;
   color: #262626;
@@ -55,33 +55,35 @@
 }
 
 #vis .small-title {
-    font-size: 45px;
-    font-family: DIN Condensed;;
+    font-size: 30px;
+    font-family: Arial;
     text-anchor: middle;
     font-weight: bold;
 }
 
 #vis .small-title2 {
-    font-size: 28px;
-    font-family: DIN Condensed;;
+    font-size: 18px;
+    font-family: Arial;;
     text-anchor: middle;
     font-weight: bold;
 }
 
 #vis .stack-legend-text {
-    font-family:DIN Condensed;
+    font-family:Arial;
     font-weight: light;
-    font-size: 18px;
+    font-size: 13px;
 }
 
 #vis .main-title {
-  font-size: 80px;
-  font-family:DIN Condensed;
+  font-size: 55px;
+  font-family: Arial;
+  font-weight: bold;
   text-anchor: middle;
 }
 
 #vis .sub-title {
-  font-size:80px;
+  font-size: 40px;
+  font-family: Arial;
   text-anchor: middle;
 }
 
@@ -107,23 +109,23 @@
 #vis .tooltip {
     opacity: 1;
     text-anchor: left;
-    font-size: 15px;
+    font-size: 10px;
     font-weight: bold;
 }
 
 #vis .dot-labels-active {
     opacity: 1;
     fill: black;
-    font-size:20px;
-    font-family: DIN Condensed;
+    font-size:15px;
+    font-family: Arial;
         font-weight: bold;
 }
 
 
 #vis .tooltip {
     opacity: 1;
-    font-family: DIN Condensed;
-    font-size: 20px;
+    font-family: Arial;
+    font-size: 15px;
 }
 
 .axis path,

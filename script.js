@@ -103,7 +103,7 @@
         var monthlyIncome = rawData[1];
         var rollingDebt = rawData[2];
         var finesByGroup = rawData[3];
-        
+
 
          setupVis(cumData, monthlyIncome, rollingDebt, finesByGroup);
 
@@ -284,7 +284,7 @@
             .data([0]).enter()
             .append('text')
             .text("But wait... How drastically can fines affect one's financial stability?")
-            .attr('x', -400)
+            .attr('x', -600)
             .attr('y', 50)
             .attr('dx', 0)
             .attr('dy', 0)
@@ -366,7 +366,7 @@
             .attr("width", 240)
             .attr("height", 50)
             .attr("fill", "white")
-            .style("opacity", .8); 
+            .style("opacity", .8);
 
         tooltip.append("text")
             .attr('class', 'tooltip')
@@ -457,7 +457,7 @@
         updateFunctions[4] =  showHighIncomeGroup;
         updateFunctions[5] =  showMiddleIncomeGroup;
         updateFunctions[6] =  showLowIncomeGroup;
-        updateFunctions[10] = blankSection; 
+        updateFunctions[10] = blankSection;
 
     };
 
@@ -509,7 +509,7 @@
      */
         function showNews() {
 
-    
+
         hideAxis();
             g.selectAll('.main-title')
                 .transition()
@@ -791,7 +791,7 @@
                 .attr("opacity", .2);
 
             g.selectAll('.bubbles-text.low-income')
-                .attr('opacity', 1); 
+                .attr('opacity', 1);
 
             g.selectAll('.dot')
                 .attr('opacity', 0)
@@ -868,7 +868,7 @@
                 .attr('x', width/2)
                 .attr('opacity', 0);
 
-  
+
             g.selectAll('.debt-text')
                 .transition()
                 .duration(300)
@@ -1281,7 +1281,7 @@ var files = ['data/cum_debt.json', 'data/agg_data2.json', 'data/year_income_roll
         });
 
 var monthlyIncome2 = promises[1];
- 
+
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
